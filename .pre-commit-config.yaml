@@ -1,0 +1,24 @@
+---
+repos:
+  - repo: https://github.com/adamchainz/django-upgrade
+    rev: '1.15.0' # replace with latest tag on GitHub
+    hooks:
+      - id: django-upgrade
+        args: [--target-version, '4.2'] # Replace with Django version
+
+  # https://docs.astral.sh/ruff/
+  # ruff should come before black because we want to format any fixes that ruff applies
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.1.1
+    hooks:
+      - id: ruff
+        # enable auto-fixing of common errors
+        args: [--exit-non-zero-on-fix]
+
+  - repo: https://github.com/psf/black
+    rev: 22.10.0
+    hooks:
+      - id: black
+        exclude: onetime_scripts|\/fixtures\/|ycharts\/settings
+        args: [--line-length=120, --skip-string-normalization]
+        

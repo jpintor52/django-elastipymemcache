@@ -27,6 +27,9 @@ wheels/
 .installed.cfg
 *.egg
 
+# PyCharm idea files
+.idea/*
+
 # PyInstaller
 #  Usually these files are written by a python script from a template
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
@@ -97,5 +100,3 @@ ENV/
 
 # mkdocs documentation
 /site
-
-
