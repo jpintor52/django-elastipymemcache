@@ -17,6 +17,7 @@ def invalidate_cache_after_error(f):
     """
     Catch any exception and invalidate internal cache with list of nodes
     """
+
     @wraps(f)
     def wrapper(self, *args, **kwds):
         try:
@@ -24,6 +25,7 @@ def invalidate_cache_after_error(f):
         except Exception:
             self.clear_cluster_nodes_cache()
             raise
+
     return wrapper
 
 
@@ -32,6 +34,7 @@ class ElastiPymemcache(PyMemcacheCache):
     Backend for Amazon ElastiCache (memcached) with auto discovery mode
     it used pymemcache
     """
+
     def __init__(self, server, params):
 
         super().__init__(server, params)
@@ -49,8 +52,7 @@ class ElastiPymemcache(PyMemcacheCache):
 
         if len(self._servers) > 1:
             raise InvalidCacheBackendError(
-                'ElastiCache should be configured with only one server '
-                '(Configuration Endpoint)',
+                'ElastiCache should be configured with only one server ' '(Configuration Endpoint)',
             )
         try:
             host, port = self._servers[0].split(':')
@@ -77,8 +79,7 @@ class ElastiPymemcache(PyMemcacheCache):
     @property
     def client_servers(self):
         try:
-            return self.configuration_endpoint_client \
-                .get_cluster_info()['nodes']
+            return self.configuration_endpoint_client.get_cluster_info()['nodes']
         except (
             OSError,
             socket.gaierror,

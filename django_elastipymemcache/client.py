@@ -1,8 +1,8 @@
 import logging
 from distutils.version import StrictVersion
 
-from django.utils.encoding import smart_text
-from pymemcache.client.base import Client, _readline
+from django.utils.encoding import smart_str
+from pymemcache.client.base import _readline, Client
 from pymemcache.exceptions import MemcacheUnknownError
 
 logger = logging.getLogger(__name__)
@@ -17,7 +17,7 @@ class ConfigurationEndpointClient(Client):
         return client
 
     def _get_cluster_info_cmd(self):
-        if StrictVersion(smart_text(self.version())) < StrictVersion('1.4.14'):
+        if StrictVersion(smart_str(self.version())) < StrictVersion('1.4.14'):
             return b'get AmazonElastiCache:cluster\r\n'
         return b'config get cluster\r\n'
 
@@ -26,7 +26,7 @@ class ConfigurationEndpointClient(Client):
         nodes = []
         for raw_node in raw_nodes.split(b' '):
             host, ip, port = raw_node.split(b'|')
-            nodes.append((smart_text(ip or host), int(port)))
+            nodes.append((smart_str(ip or host), int(port)))
         return {
             'version': int(raw_version),
             'nodes': nodes,
@@ -52,9 +52,11 @@ class ConfigurationEndpointClient(Client):
                 try:
                     result = self._extract_cluster_info(line)
                 except ValueError:
-                    raise MemcacheUnknownError('Wrong format: {line}'.format(
-                        line=line,
-                    ))
+                    raise MemcacheUnknownError(
+                        'Wrong format: {line}'.format(
+                            line=line,
+                        )
+                    )
             number_of_line += 1
 
     def get_cluster_info(self):
@@ -66,9 +68,11 @@ class ConfigurationEndpointClient(Client):
                 logger.warn('Failed to get cluster: %s', e)
                 return {
                     'version': None,
-                    'nodes': [(
-                        self.server[0],
-                        int(self.server[1]),
-                    )]
+                    'nodes': [
+                        (
+                            self.server[0],
+                            int(self.server[1]),
+                        )
+                    ],
                 }
             raise
